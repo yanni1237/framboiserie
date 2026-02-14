@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Framboiserie - L'Excellence d'Azzazga</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+     <!-- EmailJS SDK -->
+     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+     <script type="text/javascript">
+         (function() {
+             // REMPLACEZ 'YOUR_PUBLIC_KEY' par votre clé publique EmailJS
+             emailjs.init("tKG2mBtb0aEW5I2hP");
+         })();
+     </script>
+   <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        raspberry: '#D21F3C',
+                        leaf: '#2D6A4F',
+                        berrySoft: '#FFF1F2',
+                        berryDark: '#9B1B30',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .transition-section { transition: all 0.4s ease-in-out; }
+        .active-tab {
+            background-color: white;
+            color: #D21F3C;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        .product-image {
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+
+    <!-- HEADER -->
+    <header class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-raspberry rounded-full flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <span class="text-2xl font-serif font-bold text-raspberry tracking-tight">La Framboiserie</span>
+                </div>
+
+                <nav class="hidden sm:flex items-center gap-4">
+                    <div class="bg-gray-100 p-1 rounded-xl flex">
+                        <button onclick="switchView('b2c')" id="btn-b2c" class="px-6 py-2 rounded-lg font-semibold transition-all duration-200 active-tab">Particuliers</button>
+                        <button onclick="switchView('b2b')" id="btn-b2b" class="px-6 py-2 rounded-lg font-semibold transition-all duration-200 text-gray-500 hover:text-raspberry">Grossistes</button>
+                    </div>
+                    <button onclick="toggleCart()" id="cartBtn" class="relative p-2 rounded-xl text-raspberry hover:bg-berrySoft transition-colors hidden" title="Panier">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                        <span id="cartBadge" class="absolute -top-1 -right-1 bg-raspberry text-white text-xs font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+                </nav>
+
+                <div class="sm:hidden flex items-center gap-2">
+                    <button onclick="toggleCart()" id="cartBtnMobile" class="relative p-2 text-raspberry hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                        <span id="cartBadgeMobile" class="absolute -top-0.5 -right-0.5 bg-raspberry text-white text-[10px] font-bold min-w-[14px] h-[14px] rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+                    <button onclick="toggleViewMobile()" class="p-2 text-raspberry">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Panneau Panier (drawer) -->
+    <div id="cartOverlay" class="fixed inset-0 bg-black/40 z-[60] hidden" onclick="closeCart()"></div>
+    <div id="cartDrawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-[70] transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-gray-900">Votre panier</h2>
+            <button type="button" onclick="closeCart()" class="p-2 text-gray-400 hover:text-gray-600 rounded-lg">✕</button>
+        </div>
+        <div id="cartContent" class="flex-1 overflow-y-auto p-6">
+            <div id="cartEmpty" class="text-center text-gray-500 py-12">Votre panier est vide.</div>
+            <div id="cartLines" class="space-y-4 hidden"></div>
+        </div>
+        <div id="cartFooter" class="p-6 border-t border-gray-100 space-y-3 hidden">
+            <div class="flex justify-between text-sm text-gray-600">
+                <span>Sous-total</span>
+                <span id="cartSubtotal">0 DZD</span>
+            </div>
+            <div class="flex justify-between text-sm text-gray-600">
+                <span>Livraison</span>
+                <span id="cartDelivery">0 DZD</span>
+            </div>
+            <div class="flex justify-between text-lg font-bold text-gray-900 pt-2">
+                <span>Total</span>
+                <span id="cartTotal" class="text-raspberry">0 DZD</span>
+            </div>
+            <p id="cartDeliveryNote" class="text-xs text-green-600 font-medium hidden">✓ Livraison gratuite (3 barquettes ou plus)</p>
+            <button type="button" onclick="goToCheckout()" class="w-full py-4 bg-raspberry text-white rounded-xl font-bold hover:bg-berryDark transition-all">Passer la commande</button>
+        </div>
+    </div>
+
+    <main class="pt-20">
+        <!-- SECTION B2C -->
+        <section id="section-b2c" class="transition-section">
+            <div class="relative py-16 bg-berrySoft overflow-hidden">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center lg:text-left">
+                    <div class="lg:w-1/2">
+                        <span class="inline-block px-4 py-1 rounded-full bg-raspberry/10 text-raspberry font-bold text-sm mb-4">DIRECT DU PRODUCTEUR - AZZAZGA</span>
+                        <h1 class="text-5xl md:text-6xl font-serif font-bold text-gray-900 mb-6">Fraîcheur cueillie le <span class="text-raspberry">matin même</span>.</h1>
+                        <p class="text-lg text-gray-600 mb-8 italic">"Le goût du soleil de Kabylie dans chaque baie."</p>
+                        <a href="#shop" class="inline-block px-10 py-4 bg-raspberry text-white rounded-full font-bold shadow-xl shadow-raspberry/20 hover:scale-105 transition-transform">Commander maintenant</a>
+                    </div>
+                </div>
+                <div class="absolute top-0 right-0 w-1/2 h-full hidden lg:block">
+                    <img src="images/hero.jpg" alt="Framboises fraîches" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1518133835878-5a93cc3f89e5?auto=format&fit=crop&q=80&w=1000'">
+                </div>
+            </div>
+
+            <div id="shop" class="max-w-7xl mx-auto px-4 py-24">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-serif font-bold text-gray-900">Nos Barquettes</h2>
+                    <p class="text-gray-500 mt-2">Du plaisir individuel au partage familial.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <!-- 100g -->
+                    <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all border border-gray-100 flex flex-col">
+                        <img src="images/barquette-100g.jpg" alt="Barquette 100g" class="product-image w-full" onerror="this.src='https://images.unsplash.com/photo-1563513330613-5604de3ad46f?auto=format&fit=crop&q=80&w=600'">
+                        <div class="p-8 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold">L'essentiel (100g)</h3>
+                            <p class="text-raspberry font-bold text-2xl mt-2 mb-4">1500 DZD</p>
+                            <div class="mt-auto">
+                                <button onclick="addToCart('100g')" class="w-full py-3 bg-raspberry text-white rounded-xl font-bold hover:bg-berryDark transition-all">Commander</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 250g -->
+                    <div class="group transform lg:-translate-y-4 bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all border-2 border-raspberry/10 relative flex flex-col">
+                        <span class="absolute top-4 right-4 bg-raspberry text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest z-10">Best-Seller</span>
+                        <img src="images/barquette-250g.jpg" alt="Barquette 250g" class="product-image w-full" onerror="this.src='https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&q=80&w=600'">
+                        <div class="p-8 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold">La Classique (250g)</h3>
+                            <p class="text-raspberry font-bold text-2xl mt-2 mb-4">3000 DZD</p>
+                            <div class="mt-auto">
+                                <button onclick="addToCart('250g')" class="w-full py-3 bg-raspberry text-white rounded-xl font-bold shadow-lg shadow-raspberry/30 hover:bg-berryDark transition-all">Commander</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 500g -->
+                    <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all border border-gray-100 flex flex-col">
+                        <img src="images/barquette-500g.jpg" alt="Barquette 500g" class="product-image w-full" onerror="this.src='https://images.unsplash.com/photo-1544070078-a212eda27b49?auto=format&fit=crop&q=80&w=600'">
+                        <div class="p-8 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold">La Familiale (500g)</h3>
+                            <p class="text-raspberry font-bold text-2xl mt-2 mb-4">7000 DZD</p>
+                            <div class="mt-auto">
+                                <button onclick="addToCart('500g')" class="w-full py-3 bg-raspberry text-white rounded-xl font-bold hover:bg-berryDark transition-all">Commander</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Page Confirmation & Paiement -->
+        <section id="section-checkout" class="hidden transition-section min-h-screen py-12 bg-gray-50">
+            <div class="max-w-2xl mx-auto px-4">
+                <button type="button" onclick="backFromCheckout()" class="flex items-center gap-2 text-raspberry font-semibold mb-8 hover:underline">
+                    ← Retour au panier
+                </button>
+                <h1 class="text-3xl font-serif font-bold text-gray-900 mb-8">Confirmation & Paiement</h1>
+
+                <!-- Récap commande -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">Récapitulatif de la commande</h2>
+                    <div id="checkoutRecap" class="space-y-2 text-gray-600"></div>
+                    <div class="mt-4 pt-4 border-t border-gray-100 space-y-1 text-sm">
+                        <div class="flex justify-between"><span>Sous-total</span><span id="checkoutSubtotal">0 DZD</span></div>
+                        <div class="flex justify-between"><span>Livraison</span><span id="checkoutDelivery">0 DZD</span></div>
+                        <div class="flex justify-between font-bold text-lg text-raspberry pt-2"><span>Total à payer</span><span id="checkoutTotal">0 DZD</span></div>
+                    </div>
+                </div>
+
+                <!-- Adresse de livraison -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">Adresse de livraison</h2>
+                    <div class="space-y-4">
+                        <input type="text" id="checkoutName" placeholder="Nom complet" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-raspberry outline-none">
+                        <input type="tel" id="checkoutPhone" placeholder="Téléphone" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-raspberry outline-none">
+                        <textarea id="checkoutAddress" placeholder="Adresse de livraison" required rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-raspberry outline-none resize-none"></textarea>
+                    </div>
+                </div>
+
+                <!-- Paiement par carte -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">Paiement par carte</h2>
+                    <div class="space-y-4">
+                        <input type="text" id="cardHolder" placeholder="Nom sur la carte" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-raspberry outline-none" maxlength="50">
+                        <input type="text" id="cardNumber" placeholder="Numéro de carte (16 chiffres)" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-raspberry outline-none" maxlength="19" inputmode="numeric" pattern="[0-9\s]*">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="cardExpiry" placeholder="MM/AA" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-raspberry outline-none" maxlength="5">
+                            <input type="text" id="cardCvv" placeholder="CVV" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-raspberry outline-none" maxlength="4" inputmode="numeric">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" onclick="submitPayment()" id="btnPay" class="w-full py-4 bg-raspberry text-white rounded-xl font-bold text-lg hover:bg-berryDark transition-all shadow-lg shadow-raspberry/20">
+                    Payer <span id="btnPayAmount">0</span> DZD
+                </button>
+            </div>
+        </section>
+
+        <!-- Succès commande -->
+        <div id="orderSuccess" class="fixed inset-0 bg-black/50 z-[80] hidden items-center justify-center p-4 backdrop-blur-sm">
+            <div class="bg-white rounded-3xl max-w-md w-full p-8 text-center shadow-2xl">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-green-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Commande confirmée !</h3>
+                <p class="text-gray-600 mb-6">Votre paiement a été accepté. Vos framboises seront livrées à l'adresse indiquée.</p>
+                <button type="button" onclick="closeOrderSuccess()" class="px-8 py-3 bg-raspberry text-white rounded-full font-bold hover:bg-berryDark transition-all">Retour à l'accueil</button>
+            </div>
+        </div>
+
+        <!-- SECTION GROSSISTES (B2B) -->
+        <section id="section-b2b" class="hidden transition-section bg-slate-50 min-h-screen py-24">
+            <div class="max-w-6xl mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-4xl font-serif font-bold text-slate-800 mb-6">Grossistes : <span class="text-leaf">Qualité IQF</span></h2>
+                    <p class="text-slate-600 mb-8 leading-relaxed">Produites à Azzazga, nos framboises surgelées IQF sont destinées aux pâtissiers et industriels exigeants d'Alger et ses environs.</p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4 bg-white p-4 rounded-xl shadow-sm border-l-4 border-leaf">
+                            <span class="font-bold text-leaf text-xl italic">100% Algérie</span>
+                        </div>
+                        <div class="flex items-center space-x-4 bg-white p-4 rounded-xl shadow-sm border-l-4 border-leaf">
+                            <span class="font-bold text-leaf text-xl italic">Logistique Algiers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulaire Devis Multi-Poids -->
+                <div class="bg-white p-10 rounded-3xl shadow-2xl border border-slate-100">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-slate-800">Devis Multi-Formats</h3>
+                    </div>
+                    <form onsubmit="handleQuote(event)" class="space-y-6">
+                        <div class="space-y-4">
+                            <input type="text" id="proCompany" placeholder="Nom de l'établissement" required class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-leaf outline-none">
+                            <select id="proActivity" class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                                <option value="">Type d'activité...</option>
+                                <option value="patisserie">Pâtisserie / Boulangerie</option>
+                                <option value="hotel">Hôtel / Restaurant</option>
+                                <option value="glacier">Glacier / Industriel</option>
+                                <option value="glacier">Autre</option>
+                            </select>
+                        </div>
+
+                        <!-- Liste Dynamique des Produits -->
+                        <div class="space-y-3">
+                            <label class="block text-sm font-bold text-slate-700">Votre commande :</label>
+                            <div id="quoteLinesContainer" class="space-y-3">
+                                <!-- La première ligne est injectée par JS au chargement -->
+                            </div>
+                            <button type="button" onclick="addQuoteLine()" class="text-sm text-leaf font-bold flex items-center gap-1 mt-2 hover:underline">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Message (Optionnel)</label>
+                                    <textarea name="message" rows="2" class="w-full px-4 py-3 bg-gray-50 rounded-lg border focus:border-raspberry focus:ring-1 focus:ring-raspberry outline-none transition" placeholder="Précisions sur la livraison..."></textarea>
+                                </div>
+                            </button>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 bg-leaf text-white rounded-xl font-bold text-lg hover:bg-emerald-800 transition-all shadow-lg shadow-leaf/20">Envoyer ma demande groupée</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-8 py-4 rounded-2xl shadow-2xl hidden z-[200] transition-all opacity-0">
+        <span id="toast-text"></span>
+    </div>
+
+    <script>
+        const PRODUCTS = {
+            '100g': { id: '100g', name: "L'Individuelle (100g)", price: 1500 },
+            '250g': { id: '250g', name: 'La Classique (250g)', price: 3000 },
+            '500g': { id: '500g', name: 'La Familiale (500g)', price: 7000 }
+        };
+        const DELIVERY_FEE = 500;
+        const FREE_DELIVERY_MIN_BARQUETTES = 3;
+
+        let cart = []; // { id, name, price, qty }
+
+        function getBarquetteCount() {
+            return cart.reduce((sum, item) => sum + item.qty, 0);
+        }
+        function getSubtotal() {
+            return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        }
+        function getDeliveryCost() {
+            return getBarquetteCount() >= FREE_DELIVERY_MIN_BARQUETTES ? 0 : DELIVERY_FEE;
+        }
+        function getTotal() {
+            return getSubtotal() + getDeliveryCost();
+        }
+
+        function addToCart(gram) {
+            const p = PRODUCTS[gram];
+            if (!p) return;
+            const existing = cart.find(x => x.id === p.id);
+            if (existing) existing.qty++; else cart.push({ ...p, qty: 1 });
+            updateCartUI();
+            showToast(`Barquette ${p.name} ajoutée au panier !`);
+            if (document.getElementById('section-b2c') && !document.getElementById('section-b2c').classList.contains('hidden')) {
+                document.getElementById('cartBtn').classList.remove('hidden');
+                document.getElementById('cartBtnMobile').classList.remove('hidden');
+            }
+        }
+        function removeFromCart(id) {
+            cart = cart.filter(x => x.id !== id);
+            updateCartUI();
+        }
+        function changeQty(id, delta) {
+            const item = cart.find(x => x.id === id);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const count = getBarquetteCount();
+            const badge = document.getElementById('cartBadge');
+            const badgeM = document.getElementById('cartBadgeMobile');
+            if (badge) { badge.textContent = count; count ? badge.classList.remove('hidden') : badge.classList.add('hidden'); }
+            if (badgeM) { badgeM.textContent = count; count ? badgeM.classList.remove('hidden') : badgeM.classList.add('hidden'); }
+
+            const empty = document.getElementById('cartEmpty');
+            const lines = document.getElementById('cartLines');
+            const footer = document.getElementById('cartFooter');
+            if (count === 0) {
+                if (empty) empty.classList.remove('hidden');
+                if (lines) { lines.classList.add('hidden'); lines.innerHTML = ''; }
+                if (footer) footer.classList.add('hidden');
+                return;
+            }
+            if (empty) empty.classList.add('hidden');
+            if (lines) {
+                lines.classList.remove('hidden');
+                lines.innerHTML = cart.map(item => `
+                    <div class="flex justify-between items-start gap-2 py-2 border-b border-gray-100 last:border-0">
+                        <div>
+                            <p class="font-semibold text-gray-900">${item.name}</p>
+                            <p class="text-sm text-raspberry font-bold">${item.price.toLocaleString('fr-DZ')} DZD × ${item.qty}</p>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button type="button" onclick="changeQty('${item.id}', -1)" class="w-8 h-8 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 flex items-center justify-center">−</button>
+                            <span class="w-6 text-center text-sm font-medium">${item.qty}</span>
+                            <button type="button" onclick="changeQty('${item.id}', 1)" class="w-8 h-8 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 flex items-center justify-center">+</button>
+                            <button type="button" onclick="removeFromCart('${item.id}')" class="p-1 text-red-400 hover:text-red-600" title="Supprimer">✕</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            if (footer) {
+                footer.classList.remove('hidden');
+                document.getElementById('cartSubtotal').textContent = getSubtotal().toLocaleString('fr-DZ') + ' DZD';
+                const delivery = getDeliveryCost();
+                document.getElementById('cartDelivery').textContent = delivery === 0 ? 'Gratuite' : delivery.toLocaleString('fr-DZ') + ' DZD';
+                document.getElementById('cartTotal').textContent = getTotal().toLocaleString('fr-DZ') + ' DZD';
+                const note = document.getElementById('cartDeliveryNote');
+                if (note) { if (delivery === 0) note.classList.remove('hidden'); else note.classList.add('hidden'); }
+            }
+        }
+
+        function toggleCart() {
+            document.getElementById('cartOverlay').classList.remove('hidden');
+            document.getElementById('cartDrawer').classList.remove('translate-x-full');
+        }
+        function closeCart() {
+            document.getElementById('cartOverlay').classList.add('hidden');
+            document.getElementById('cartDrawer').classList.add('translate-x-full');
+        }
+
+        function goToCheckout() {
+            if (getBarquetteCount() === 0) return;
+            closeCart();
+            document.getElementById('section-b2c').classList.add('hidden');
+            document.getElementById('section-b2b').classList.add('hidden');
+            document.getElementById('section-checkout').classList.remove('hidden');
+            document.getElementById('btn-b2c').classList.remove('active-tab');
+            document.getElementById('btn-b2b').classList.remove('active-tab');
+            document.getElementById('checkoutRecap').innerHTML = cart.map(item =>
+                `<div class="flex justify-between"><span>${item.name} × ${item.qty}</span><span>${(item.price * item.qty).toLocaleString('fr-DZ')} DZD</span></div>`
+            ).join('');
+            document.getElementById('checkoutSubtotal').textContent = getSubtotal().toLocaleString('fr-DZ') + ' DZD';
+            document.getElementById('checkoutDelivery').textContent = getDeliveryCost() === 0 ? 'Gratuite' : getDeliveryCost().toLocaleString('fr-DZ') + ' DZD';
+            document.getElementById('checkoutTotal').textContent = getTotal().toLocaleString('fr-DZ') + ' DZD';
+            document.getElementById('btnPayAmount').textContent = getTotal().toLocaleString('fr-DZ');
+        }
+
+        function backFromCheckout() {
+            document.getElementById('section-checkout').classList.add('hidden');
+            document.getElementById('section-b2c').classList.remove('hidden');
+            document.getElementById('btn-b2c').classList.add('active-tab');
+            toggleCart();
+        }
+
+        function formatCardNumber(value) {
+            const v = value.replace(/\D/g, '').slice(0, 16);
+            return v.replace(/(.{4})/g, '$1 ').trim();
+        }
+        function formatExpiry(value) {
+            const v = value.replace(/\D/g, '').slice(0, 4);
+            if (v.length >= 2) return v.slice(0, 2) + '/' + v.slice(2);
+            return v;
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const cardNum = document.getElementById('cardNumber');
+            const cardExp = document.getElementById('cardExpiry');
+            if (cardNum) cardNum.addEventListener('input', function() { this.value = formatCardNumber(this.value); });
+            if (cardExp) cardExp.addEventListener('input', function() { this.value = formatExpiry(this.value); });
+        });
+
+        function submitPayment() {
+            const name = document.getElementById('checkoutName').value.trim();
+            const phone = document.getElementById('checkoutPhone').value.trim();
+            const address = document.getElementById('checkoutAddress').value.trim();
+            const holder = document.getElementById('cardHolder').value.trim();
+            const number = document.getElementById('cardNumber').value.replace(/\s/g, '');
+            const expiry = document.getElementById('cardExpiry').value;
+            const cvv = document.getElementById('cardCvv').value.trim();
+            if (!name || !phone || !address) { showToast('Remplissez l\'adresse de livraison.'); return; }
+            if (!holder || number.length < 16 || !expiry || cvv.length < 3) { showToast('Vérifiez les informations de la carte.'); return; }
+            document.getElementById('orderSuccess').classList.remove('hidden');
+            document.getElementById('orderSuccess').classList.add('flex');
+        }
+
+        function closeOrderSuccess() {
+            document.getElementById('orderSuccess').classList.add('hidden');
+            document.getElementById('orderSuccess').classList.remove('flex');
+            cart = [];
+            updateCartUI();
+            document.getElementById('section-checkout').classList.add('hidden');
+            document.getElementById('section-b2c').classList.remove('hidden');
+            document.getElementById('btn-b2c').classList.add('active-tab');
+            document.getElementById('checkoutName').value = '';
+            document.getElementById('checkoutPhone').value = '';
+            document.getElementById('checkoutAddress').value = '';
+            document.getElementById('cardHolder').value = '';
+            document.getElementById('cardNumber').value = '';
+            document.getElementById('cardExpiry').value = '';
+            document.getElementById('cardCvv').value = '';
+            showToast('Merci pour votre commande !');
+        }
+
+        // Initialisation de la première ligne de devis
+        window.onload = () => { addQuoteLine(); updateCartUI(); };
+
+        function addQuoteLine() {
+            const container = document.getElementById('quoteLinesContainer');
+            const rowId = Date.now();
+            const row = document.createElement('div');
+            row.className = "flex gap-2 animate-fadeIn";
+            row.id = `row-${rowId}`;
+            row.innerHTML = `
+                <select class="flex-grow px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-leaf quote-pack">
+                    <option value="5kg">Sacs 5kg IQF</option>
+                    <option value="10kg">Sacs 10kg IQF</option>
+                    <option value="15kg">Sacs 15kg IQF</option>
+                </select>
+                <input type="number" placeholder="Qté" min="1" required class="w-24 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-leaf quote-qty">
+                ${container.children.length > 0 ? `
+                    <button type="button" onclick="removeQuoteLine('row-${rowId}')" class="p-3 text-red-400 hover:text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
+                ` : '<div class="w-11"></div>'}
+            `;
+            container.appendChild(row);
+        }
+
+        function removeQuoteLine(id) {
+            const el = document.getElementById(id);
+            el.remove();
+        }
+
+function switchView(view) {
+            const b2c = document.getElementById('section-b2c');
+            const b2b = document.getElementById('section-b2b');
+            const btnB2c = document.getElementById('btn-b2c');
+            const btnB2b = document.getElementById('btn-b2b');
+            const cartBtn = document.getElementById('cartBtn');
+            const cartBtnMobile = document.getElementById('cartBtnMobile');
+            if (view === 'b2c') {
+                b2c.classList.remove('hidden'); b2b.classList.add('hidden');
+                btnB2c.classList.add('active-tab'); btnB2b.classList.remove('active-tab');
+                if (getBarquetteCount() > 0) { cartBtn.classList.remove('hidden'); cartBtnMobile.classList.remove('hidden'); }
+            } else {
+                b2b.classList.remove('hidden'); b2c.classList.add('hidden');
+                btnB2b.classList.add('active-tab'); btnB2c.classList.remove('active-tab');
+                cartBtn.classList.add('hidden'); cartBtnMobile.classList.add('hidden');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleQuote(e) {
+            e.preventDefault();
+            const packs = Array.from(document.querySelectorAll('.quote-pack')).map(s => s.value);
+            const qtys = Array.from(document.querySelectorAll('.quote-qty')).map(i => i.value);
+            let detail = packs.map((p, i) => `${qtys[i]}x ${p}`).join(', ');
+
+            showToast(`Demande envoyée : ${detail}.`);
+            e.target.reset();
+            document.getElementById('quoteLinesContainer').innerHTML = "";
+            addQuoteLine();
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-text').innerText = msg;
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('opacity-100'), 10);
+            setTimeout(() => { t.classList.remove('opacity-100'); setTimeout(() => t.classList.add('hidden'), 300); }, 3000);
+        }
+
+        function toggleViewMobile() {
+            const isB2C = !document.getElementById('section-b2c').classList.contains('hidden');
+            switchView(isB2C ? 'b2b' : 'b2c');
+        }
+    </script>
+</body>
+</html>
